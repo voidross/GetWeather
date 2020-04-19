@@ -8,13 +8,20 @@ namespace GetWeather_console
     class Weather
     {
         private string ApiKey = "4be5f945e935442b7f785dd39a3c877a";
-        public string Url { get; private set; }
         public string Location { get; private set; }
+        public string Unit { get; private set; }
+        public string Url { get; private set; }
 
-        public Weather(string location)
+        public Weather(string location, bool unit)
         {
             Location = location;
-            Url = "https://api.openweathermap.org/data/2.5/weather?q=" + Location + "&mode=xml&units=imperial&APPID=" + ApiKey;
+
+            if (unit == true)
+                Unit = "imperial";
+            else
+                Unit = "metric";
+
+            Url = "https://api.openweathermap.org/data/2.5/weather?q=" + Location + "&mode=xml&units=" + Unit + "&APPID=" + ApiKey;
         }
 
         public string GetWeather()
@@ -38,7 +45,7 @@ namespace GetWeather_console
     {
         static void Main(string[] args)
         {
-            Weather weather = new Weather("Edinburgh");
+            Weather weather = new Weather("Edinburgh", false);
             Console.WriteLine(weather.GetWeather());
 
             Console.ReadLine();
