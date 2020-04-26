@@ -1,18 +1,19 @@
-﻿using System;
-using System.IO;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Net;
-using System.Xml;
 
 namespace GetWeather_console
 {
-    class Weather
+    class GetWeather
     {
         private string ApiKey = "4be5f945e935442b7f785dd39a3c877a";
         public string Location { get; private set; }
         public string Unit { get; private set; }
         public string Url { get; private set; }
+        public dynamic Weather { get; private set; }
+        public JToken WeatherMain { get; private set; }
 
-        public Weather(string location, bool unit)
+        public GetWeather(string location, bool unit)
         {
             Location = location;
 
@@ -21,32 +22,29 @@ namespace GetWeather_console
             else
                 Unit = "metric";
 
-            Url = "https://api.openweathermap.org/data/2.5/weather?q=" + Location + "&mode=xml&units=" + Unit + "&APPID=" + ApiKey;
-        }
+            Url = "https://api.openweathermap.org/data/2.5/weather?q=" + Location + "&units=" + Unit + "&APPID=" + ApiKey;
 
-        public string GetWeather()
-        {
-            WebClient client = new WebClient();
-            XmlDocument xmlDocument = new XmlDocument();
-            StringWriter stringWriter = new StringWriter();
-            XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
-        
-            string xml = client.DownloadString(Url);
-            xmlDocument.LoadXml(xml);
-            xmlTextWriter.Formatting = Formatting.Indented;
-            xmlDocument.WriteTo(xmlTextWriter);
+            var json = new WebClient().DownloadString(Url);
 
-            return stringWriter.ToString();
+            Weather = JObject.Parse(json);
+
+            //The "weather" section of the returned JSON is an array. Using JToken to access.
+            WeatherMain = Weather["weather"].First["main"];
         }
     }
-
 
     class Program
     {
         static void Main(string[] args)
         {
-            Weather weather = new Weather("Edinburgh", false);
-            Console.WriteLine(weather.GetWeather());
+            GetWeather weather = new GetWeather("Edinburgh", false);
+
+            Console.WriteLine("Location: " + weather.Weather.name);
+            Console.WriteLine("Weather: " + weather.WeatherMain);
+            Console.WriteLine("Temperature: " + weather.Weather.main.temp);
+            Console.WriteLine("Min: " + weather.Weather.main.temp_min);
+            Console.WriteLine("Max: " + weather.Weather.main.temp_max);
+            Console.WriteLine("Wind speed: " + weather.Weather.wind.speed);
 
             Console.ReadLine();
         }
