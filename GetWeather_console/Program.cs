@@ -1,35 +1,54 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace GetWeather_console
 {
     class GetWeather
     {
-        private string ApiKey = "4be5f945e935442b7f785dd39a3c877a";
-        public string Location { get; private set; }
-        public string Unit { get; private set; }
-        public string Url { get; private set; }
-        public dynamic Weather { get; private set; }
-        public JToken WeatherMain { get; private set; }
+        private readonly string ApiKey = "4be5f945e935442b7f785dd39a3c877a";
+        public Coord Coord { get; private set; }
+        public List<Weather> Weathers { get; private set; } = new List<Weather>();
+        public string Base { get; private set; }
+        public Main Main { get; private set; }
+        public int Visibility { get; private set; }
+        public Wind Wind { get; private set; }
+        public Clouds Clouds { get; private set; }
+        public double Dt { get; private set; }
+        public Sys Sys { get; private set; }
+        public int Timezone { get; private set; }
+        public double Id { get; private set; }
+        public string Name { get; private set; }
+        public int Cod { get; private set; }
 
-        public GetWeather(string location, bool unit)
+        public JObject ApiResult { get; private set; }
+
+        public GetWeather(string city, string country, bool unitBool)
         {
-            Location = location;
+            var unit = "metric";
 
-            if (unit == true)
-                Unit = "imperial";
-            else
-                Unit = "metric";
+            if (unitBool)
+                unit = "imperial";
 
-            Url = "https://api.openweathermap.org/data/2.5/weather?q=" + Location + "&units=" + Unit + "&APPID=" + ApiKey;
+            var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&units=" + unit + "&APPID=" + ApiKey;
 
-            var json = new WebClient().DownloadString(Url);
+            ApiResult = JObject.Parse(new WebClient().DownloadString(url));
 
-            Weather = JObject.Parse(json);
-
-            //The "weather" section of the returned JSON is an array. Using JToken to access.
-            WeatherMain = Weather["weather"].First["main"];
+            Coord = new Coord(ApiResult.SelectToken("coord"));
+            foreach (JToken weather in ApiResult.SelectToken("weather"))
+                Weathers.Add(new Weather(weather));
+            Base = ApiResult.SelectToken("base").ToString();
+            Main = new Main(ApiResult.SelectToken("main"));
+            Visibility = int.Parse(ApiResult.SelectToken("visibility").ToString());
+            Wind = new Wind(ApiResult.SelectToken("wind"));
+            Clouds = new Clouds(ApiResult.SelectToken("clouds"));
+            Dt = double.Parse(ApiResult.SelectToken("dt").ToString());
+            Sys = new Sys(ApiResult.SelectToken("sys"));
+            Timezone = int.Parse(ApiResult.SelectToken("timezone").ToString());
+            Id = double.Parse(ApiResult.SelectToken("id").ToString());
+            Name = ApiResult.SelectToken("name").ToString();
+            Cod = int.Parse(ApiResult.SelectToken("cod").ToString());
         }
     }
 
@@ -37,14 +56,12 @@ namespace GetWeather_console
     {
         static void Main(string[] args)
         {
-            GetWeather weather = new GetWeather("Edinburgh", false);
+            // False = metric, true = imperial readings
+            GetWeather weather = new GetWeather("Edinburgh", "UK", false);
 
-            Console.WriteLine("Location: " + weather.Weather.name);
-            Console.WriteLine("Weather: " + weather.WeatherMain);
-            Console.WriteLine("Temperature: " + weather.Weather.main.temp);
-            Console.WriteLine("Min: " + weather.Weather.main.temp_min);
-            Console.WriteLine("Max: " + weather.Weather.main.temp_max);
-            Console.WriteLine("Wind speed: " + weather.Weather.wind.speed);
+            Console.WriteLine("City: " + weather.Name);
+            Console.WriteLine("Temperature: " + weather.Main.Temp);
+            Console.WriteLine("Wind speed: " + weather.Wind.Speed);
 
             Console.ReadLine();
         }
