@@ -5,8 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GetWeather"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="GetWeather" Height="450" Width="800">
+
+    <Border Padding="10">
+        <StackPanel>
+            <Grid Width="200" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Text="Get Weather" FontWeight="Bold"/>
+                <TextBlock Grid.Row="1" Text="City"/>
+                <TextBox Grid.Row="2" Name="City" Padding="3"/>
+                <TextBlock Grid.Row="3" Text="Country"/>
+                <TextBox Grid.Row="4" Name="Country" Padding="3"/>
+
+                <TextBlock Grid.Row="5" Text="Unit:"/>
+                <RadioButton Grid.Row="6" IsChecked="True" Content="Metric"/>
+                <RadioButton Grid.Row="7" Content="Imperial"/>
+                <Button Grid.Row="8" x:Name="GoButton" Click="GoButton_Click" Content="Go" Width="30" HorizontalAlignment="Left"/>
+            </Grid>
+        </StackPanel>
+    </Border>
 </Window>

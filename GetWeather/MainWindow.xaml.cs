@@ -24,5 +24,10 @@ namespace GetWeather
         {
             InitializeComponent();
         }
+
+        private void GoButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

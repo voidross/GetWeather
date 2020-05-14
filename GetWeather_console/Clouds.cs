@@ -1,14 +1,19 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GetWeather_console
 {
     public class Clouds
     {
-        public int All { get; private set; }
+        [JsonProperty("all")]
+        public long All { get; private set; }
 
         public Clouds(JToken clouds)
         {
-            All = int.Parse(clouds.SelectToken("all").ToString());
+            if (clouds.SelectToken("all") is null)
+                All = -1;
+            else
+                All = int.Parse(clouds.SelectToken("all").ToString());
         }
     }
 }
