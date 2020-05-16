@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetWeather", "GetWeather\GetWeather.csproj", "{CB791A06-E128-4C1E-9DB3-AC074D4E4D63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetWeather_console", "GetWeather_console\GetWeather_console.csproj", "{DEA95F70-D59F-4C7C-B7CD-59C6BDA7D4D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetWeather_console", "GetWeather_console\GetWeather_console.csproj", "{DEA95F70-D59F-4C7C-B7CD-59C6BDA7D4D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
